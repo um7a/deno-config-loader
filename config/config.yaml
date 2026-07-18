@@ -1,0 +1,14 @@
+log:
+  level: debug
+  allowedTags:
+    - '.*'
+  rotate:
+    bytes: 1048576
+    days: 1
+    max_files: 5
+
+app:
+  someOperand: hoge
+
+run:
+  target: test-target
