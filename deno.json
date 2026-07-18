@@ -1,6 +1,6 @@
 {
   "name": "@um7a/config-loader",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Configuration loader for Deno applications.",
   "license": "BSD-3-Clause",
   "exports": "./src/config_loader.ts",
