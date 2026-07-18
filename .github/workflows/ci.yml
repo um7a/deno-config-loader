@@ -28,7 +28,7 @@ jobs:
         run: deno lint
 
       - name: Type check
-        run: deno check src/config_loader.ts tests/main_test.ts
+        run: deno check src/ tests/
 
       - name: Test
         run: deno test --allow-read --allow-write --allow-env
