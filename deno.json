@@ -12,7 +12,7 @@
     ]
   },
   "tasks": {
-    "check": "deno fmt --check deno.json src/ tests/ README.md && deno lint && deno check src/config_loader.ts && deno test --allow-read --allow-write --allow-env",
+    "check": "deno fmt --check deno.json src/ tests/ README.md && deno lint && deno check src/ && deno test --allow-read --allow-write --allow-env",
     "publish:dry": "deno publish --dry-run"
   },
   "imports": {
