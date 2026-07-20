@@ -194,6 +194,35 @@ export class ConfigLoader {
     return [...globalRules, ...globalOperands, ...optionRules, ...operandRules];
   }
 
+  private getConfigGenerationRules(
+    nonOptionArguments: readonly string[],
+    commandMatch?: CommandMatch,
+  ): ActiveRule[] {
+    const activeRules = this.getActiveRules(
+      nonOptionArguments,
+      commandMatch,
+    );
+    const globalRuleCount = (this.configRule.global.options?.length ?? 0) +
+      (this.configRule.global.operands?.length ?? 0);
+    const globalRules = activeRules.slice(0, globalRuleCount);
+    const activeCommandRules = activeRules.slice(globalRuleCount);
+    const commandRules = (this.configRule.global.commands ?? []).flatMap(
+      (command) => {
+        if (command === commandMatch?.command) {
+          return activeCommandRules;
+        }
+        return [...(command.options ?? []), ...(command.operands ?? [])].map(
+          (rule) => ({
+            rule,
+            configKey: rule.configKey,
+            argumentValue: undefined,
+          }),
+        );
+      },
+    );
+    return [...globalRules, ...commandRules];
+  }
+
   private getArgumentDefinitions(): ArgumentDefinition[] {
     const definitions: ArgumentDefinition[] = [];
     const provider = this.configRule.global.configFileProvider;
@@ -760,7 +789,10 @@ export class ConfigLoader {
     const parsedArguments = this.parsedArguments;
     this.validateArguments(parsedArguments);
     const { nonOptionArguments, commandMatch: command } = parsedArguments;
-    const activeRules = this.getActiveRules(nonOptionArguments, command);
+    const activeRules = this.getConfigGenerationRules(
+      nonOptionArguments,
+      command,
+    );
     const generatedConfig: Record<string, unknown> = {};
     const markerPrefix = this.getGeneratedDescriptionMarkerPrefix(activeRules);
     const descriptions: string[] = [];

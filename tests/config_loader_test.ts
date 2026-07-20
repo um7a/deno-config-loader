@@ -220,6 +220,50 @@ Deno.test("generates YAML from arguments, environment, and defaults", () => {
   );
 });
 
+Deno.test("generates configuration for every command without selecting one", () => {
+  const loader = new ConfigLoader({
+    global: {
+      configFileProvider: {
+        generator: {
+          argKeys: { long: "generate-config" },
+        },
+      },
+      commands: [
+        {
+          command: "run",
+          options: [
+            {
+              key: "target",
+              configKey: "run.target",
+              envKey: "APP_TARGET",
+              valueType: "string",
+            },
+          ],
+        },
+        {
+          command: "build",
+          options: [
+            {
+              key: "output",
+              configKey: "build.output",
+              defaultValue: "dist",
+              valueType: "string",
+            },
+          ],
+        },
+      ],
+    },
+  }, {
+    args: ["--generate-config"],
+    env: { APP_TARGET: "app.ts" },
+  });
+
+  assertEquals(
+    loader.genConfig(),
+    "run:\n  target: app.ts\nbuild:\n  output: dist\n",
+  );
+});
+
 Deno.test("adds descriptions as comments to generated YAML", () => {
   const describedRule: ConfigRule = {
     global: {

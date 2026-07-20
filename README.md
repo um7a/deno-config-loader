@@ -251,7 +251,9 @@ if (config.isHelp()) {
 `genConfig()` builds YAML from command-line arguments, environment variables,
 and default values; it does not copy values from an existing configuration file.
 Only rules with `configKey` are included. Rule descriptions are emitted as YAML
-comments, and selecting a command includes that command's active rules.
+comments. Rules for every command are included even when no command is selected.
+When a command is selected, its command-line options and operands are applied;
+other commands use environment variables and default values.
 
 ```sh
 deno run --allow-env app.ts --generate-config --port 8080 > config.yaml
